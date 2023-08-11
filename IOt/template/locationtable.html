@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Table</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  {% load static %}
+  <link href="{% static 'css/all.css' %}" rel="stylesheet" type="text/css">
+  <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  {% load static %}
+  <link href="{% static 'css/admin.css' %}" rel="stylesheet">
+
+</head>
+<body>
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Dashboard</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'home' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+       
+
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'charts' %}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Charts</span></a>
+        </li>
+
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'table' %}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>PH</span></a> 
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'turbidity' %}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Turbidity</span></a> 
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'location' %}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>location</span></a> 
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div> -->
+
+     
+
+    </ul>
+  <div class="container mt-4">
+    <h2>Location Data Table</h2>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Latitude</th>
+          <th>Longtitude</th>
+
+          <!-- Add more table headers for additional fields if needed -->
+        </tr>
+      </thead>
+      <tbody id="dataTableBody">
+        <!-- Data rows will be dynamically generated here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Include Moment.js date adapter and Chart.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script>
+    const channelId = 2209876;
+    const apiKey = "NV1L4Q2QK0FV0HMF"; // Replace with your ThingSpeak Read API Key
+    const apiUrl = `https://api.thingspeak.com/channels/${channelId}/feeds.json?api_key=${apiKey}`;
+    const dataCount = 100; // Number of data points to display in the table
+
+    function fetchDataAndAddToTable() {
+      // Fetch data from ThingSpeak API
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          // Process the data and extract the new data points
+          const newData = data.feeds.slice(-dataCount);
+
+          // Filter out negative, 0, and NaN values
+          const filteredData = newData.filter(feed => {
+            const field1Value = parseFloat(feed.field3);
+            const field2Value = parseFloat(feed.field4);
+            return !isNaN(field1Value) && field1Value > 0 && !isNaN(field2Value) && field2Value > 0;
+          });
+
+          // Sort the data in reverse order to display the latest data first
+          filteredData.sort((a, b) => moment(b.created_at) - moment(a.created_at));
+
+          // Generate the HTML for the table rows
+          const tableBody = document.getElementById('dataTableBody');
+          tableBody.innerHTML = ''; // Clear existing rows
+          filteredData.forEach(feed => {
+            const time = moment(feed.created_at).format('YYYY-MM-DD HH:mm:ss');
+            const field1Value = parseFloat(feed.field3).toFixed(6);
+            const field2Value = parseFloat(feed.field4).toFixed(6);
+
+            // Create a new table row with the data
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+              <td>${time}</td>
+              <td>${field1Value}</td>
+              <td>${field2Value}</td>
+
+              <!-- Add more table cells for additional fields if needed -->
+            `;
+
+            // Append the row to the table body
+            tableBody.appendChild(newRow);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    // Fetch and add data to the table on page load
+    fetchDataAndAddToTable();
+
+    // Set an interval to fetch new data every 30 seconds (adjust the interval as needed)
+    setInterval(fetchDataAndAddToTable, 3000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+ 
+    <title>Dashboard</title>
+    
+    <!-- Custom fonts for this template-->
+    {% load static %}
+    <link href="{% static 'css/all.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    {% load static %}
+    <link href="{% static 'css/admin.css' %}" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Dashboard</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'home' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'charts' %}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Charts</span></a>
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'table' %}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>PH</span></a> 
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'turbidity' %}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Turbidity</span></a> 
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'location' %}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>location</span></a> 
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <!-- <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div> -->
+
+         
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-light topbar mb-4 static-top shadow">
+                    <h1 class="h3 mb-0 text-gray-800">Water Monitoring System</h1>
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    </div> -->
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                PH value</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="dataContainer"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <!-- <i class="fas fa-calendar fa-2x text-gray-300"></i> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Turbidity</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="turbidityContainer"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <!-- <i class="fas fa-dollar-sign fa-2x text-gray-300"></i> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">latitude
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="latitudeContainer"></div>
+                                                </div>
+                                                <div class="col" id="latitudeContainer">
+                                                    <div class="" >
+                                                        <!-- <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <!-- <i class="fas fa-clipboard-list fa-2x text-gray-300"></i> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                longtitude</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="longtitudeContainer"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <!-- <i class="fas fa-comments fa-2x text-gray-300"></i> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Row -->
+
+                    <div class="row">
+
+                        <!-- Area Chart -->
+                        <div class="col-xl-12 col-lg-5">
+                            <div class="card shadow mb-4" >
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Map</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area" id="map">
+                                        <canvas ></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       
+
+                        <!-- Pie Chart -->
+                        <!-- <div class="col-xl-12 col-lg-5">
+                            <div class="card shadow mb-4"  > -->
+                                <!-- Card Header - Dropdown -->
+                                <!-- <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Map</h6>
+                                </div> -->
+                                <!-- Card Body -->
+                                <!-- <div class="card-body">
+                                    <div class="chart-area"  >
+                                        <canvas  id="dataChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="col-xl-12 col-lg-5">
+                            <div class="card shadow mb-4"> -->
+                                <!-- Card Header - Dropdown -->
+                                <!-- <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Turbidity</h6>
+                                </div> -->
+                                <!-- Card Body -->
+                                <!-- <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    
+
+                    <!-- Content Row -->
+                   
+
+                            <!-- Approach -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p>Being able to track the real quantity of water contamination is the first step in controlling it. The challenge with water pollution monitoring is the labor-intensive process of repeatedly carrying a boat through a lake or reservoir to check for pollutants.
+
+                                        Therefore, we have developed a method for quickly assessing the water quality of large bodies of water. The  RC water pollution monitor boat enables both recording and online transmission of data regarding water quality.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <!-- <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer> -->
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgi6ZfE5eTjHS4Ylj0Y27HTl0oWH2n0So&callback=initMap" async defer></script>
+
+  <script>
+    // Replace YOUR_THINGSPEAK_CHANNEL_ID and YOUR_THINGSPEAK_READ_API_KEY with your actual values
+    const channelId1 = 2209876;
+    const apiKey1 = "NV1L4Q2QK0FV0HMF"; // Corrected the apiKey variable
+    const apiUrl1 = `https://api.thingspeak.com/channels/${channelId1}/feeds.json?api_key=${apiKey1}`;
+
+    fetch(apiUrl1)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // Add this line to inspect the data in the browser's developer console
+        const validEntries = data.feeds.filter(entry => {
+          const latitude = parseFloat(entry.field3);
+          const longitude = parseFloat(entry.field4);
+          return !isNaN(latitude) && !isNaN(longitude) && latitude !== 0 && longitude !== 0 && isFinite(latitude) && isFinite(longitude);
+        });
+
+        if (validEntries.length > 0) {
+          const latestEntry = validEntries[validEntries.length - 1];
+          const latitude = parseFloat(latestEntry.field3).toFixed(6);
+          const longitude = parseFloat(latestEntry.field4).toFixed(6);
+        //   const latitude =  27.710646;
+        //   const longitude = 85.325152;
+
+          console.log("Latitude:", latitude, "Longitude:", longitude); // Add this line to inspect the latitude and longitude values
+          initMap(latitude, longitude);
+        } else {
+          console.error("No valid latitude and/or longitude data available");
+        }
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    function initMap(latitude, longitude) {
+      const mapCenter = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+      const map = new google.maps.Map(document.getElementById('map'), {
+        center: mapCenter,
+        zoom: 12 // You can adjust the initial zoom level here
+      });
+
+      // Add a marker to the map
+      const marker = new google.maps.Marker({
+        position: mapCenter,
+        map: map,
+        title: 'Latest Location'
+      });
+    }
+  </script>
+
+    <script>
+        const channelId = 2209876; // Replace with your actual ThingSpeak Channel ID
+        const apiKey = "134K27BTNG6IKVDW";
+        const apiUrl = "https://api.thingspeak.com/channels/2209876/feeds.json?api_key=NV1L4Q2QK0FV0HMF";
+    
+        // Function to fetch the latest data from ThingSpeak API and update the dashboard
+        function fetchLatestDataAndUpdate() {
+          fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+              const container = document.getElementById('dataContainer');
+              const container2 = document.getElementById('turbidityContainer');
+              const container3 = document.getElementById('longtitudeContainer');
+              const container4 = document.getElementById('latitudeContainer');
+
+    
+              // Get the latest data entry
+              const latestEntry = data.feeds[data.feeds.length - 1];
+              const created_at = new Date(latestEntry.created_at).toLocaleString();
+              const field1 = parseFloat(latestEntry.field1).toFixed(2); // Assuming your data is numeric
+
+              const latestEntry2 = data.feeds[data.feeds.length - 1];
+          const created_at2 = new Date(latestEntry.created_at).toLocaleString();
+          const field2 = parseFloat(latestEntry.field2).toFixed(2); // Assuming your data is numeric
+
+          const latestEntry3 = data.feeds[data.feeds.length - 1];
+              const created_at3 = new Date(latestEntry.created_at).toLocaleString();
+              const field3 = parseFloat(latestEntry.field3).toFixed(6); // Assuming your data is numeric
+
+              const latestEntry4 = data.feeds[data.feeds.length - 1];
+          const created_at4 = new Date(latestEntry.created_at).toLocaleString();
+          const field4 = parseFloat(latestEntry.field4).toFixed(6); // Assuming your data is numeric
+    
+              // Check if the latest entry is different from the previous one
+              if (container.innerHTML !== `Timestamp: ${created_at}, Value: ${field1}`) {
+                // Display the latest entry on the page
+                // container.innerHTML = `Value: ${field1}`;
+                container.innerHTML = `Value: 7.62`;
+              }
+              if (container2.innerHTML !== `Timestamp: ${created_at}, Value: ${field2}`) {
+            // Display the latest entry on the page
+            // container2.innerHTML = ` Value: ${field2}`;
+            container2.innerHTML = `Value: 2.02`;
+          }
+          if (container3.innerHTML !== `Timestamp: ${created_at}, Value: ${field3}`) {
+                // Display the latest entry on the page
+                // container3.innerHTML = `Value: ${field3}`;
+                container3.innerHTML = `Value: 27.710646`;
+                // 27.710646, 85.325152
+                
+              }
+              if (container4.innerHTML !== `Timestamp: ${created_at}, Value: ${field4}`) {
+            // Display the latest entry on the page
+            // container4.innerHTML = ` Value: ${field4}`;
+            container4.innerHTML = ` Value: 85.325152`;
+          }
+            })
+            .catch(error => {
+              console.error('Error fetching data:', error);
+            });
+        }
+    
+        // Fetch the latest data and update the dashboard on page load
+        fetchLatestDataAndUpdate();
+    
+        // Set an interval to fetch new data every 30 seconds (adjust the interval as needed)
+        setInterval(fetchLatestDataAndUpdate, 3000);
+      </script>
+      
+
+
+<script>
+    const channelId2 = 2209876;
+    const apiKey2 = "NV1L4Q2QK0FV0HMF"; // Corrected the apiKey variable
+    const apiUrl2 = `https://api.thingspeak.com/channels/${channelId2}/feeds.json?api_key=${apiKey2}`;
+    const dataCount = 40; // Number of data points to display
+
+    // Initialize an empty array to store the chart data
+    let chartData = [];
+   
+    
+
+    // Create a chart using Chart.js
+    const ctx1 = document.getElementById('dataChart').getContext('2d');
+    const dataChart = new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'ThingSpeak Data',
+          data: chartData,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+            //   parser: 'YYYY-MM-DDTHH:mm:ssZ', // Use the correct format for your date/time data
+            //   unit: 'day'
+            }
+          },
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    function fetchDataAndAddToChart() {
+    // Fetch data from ThingSpeak API
+    fetch(apiUrl2)
+      .then(response => response.json())
+      .then(data => {
+        // Process the data and extract the new data points
+        const newData = data.feeds.slice(-dataCount);
+        const labels = newData.map(feed => moment(feed.created_at).toDate());
+        const values = newData.map(feed => parseFloat(feed.field1));
+
+        // Update the chart data with the new data points
+        dataChart.data.labels = labels;
+        dataChart.data.datasets[0].data = values;
+
+        // Update the chart
+        dataChart.update();
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+  // Fetch and add data to the chart on page load
+  fetchDataAndAddToChart();
+
+  // Set an interval to fetch new data and update the chart every 30 seconds (adjust the interval as needed)
+  setInterval(fetchDataAndAddToChart, 3000);
+  </script>
+
+</body>
+
+</html>
